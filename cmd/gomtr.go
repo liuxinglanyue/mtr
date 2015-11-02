@@ -15,6 +15,22 @@ func main() {
 		fmt.Println(destAddr)
 	}
 
+	//
+	c := make(chan mtr.TracerouteHop, 0)
+	go func() {
+		for {
+			hop, ok := <-c
+			if !ok {
+				fmt.Println()
+				return
+			}
+			fmt.Println(hop.TTL, hop.Address, hop.AvgTime, hop.BestTime, hop.Loss)
+		}
+	}()
+	options := mtr.TracerouteOptions{}
+	_, _ = mtr.Mtr(destAddrs, &options, c)
+	//
+
 	mm, err := mtr.T("www.baidu.com", true, 0, 0, 0, 0)
 	if err != nil {
 		fmt.Println(err)
