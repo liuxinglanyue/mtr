@@ -5,10 +5,10 @@ import (
 	"time"
 )
 
-func Traceroute(dest string, options *TracerouteOptions, c ...chan TracerouteHop) (result TracerouteResult, err error) {
+func Traceroute(dest [4]byte, options *TracerouteOptions, c ...chan TracerouteHop) (result TracerouteResult, err error) {
 	result.Hops = []TracerouteHop{}
-	destAddr, err := DestAddr(dest)
-	result.DestAddress = destAddr
+	result.DestAddress = dest
+	destAddr := AddressString(dest)
 	socketAddr, err := LocalAddr()
 	if err != nil {
 		return
@@ -36,7 +36,7 @@ func Traceroute(dest string, options *TracerouteOptions, c ...chan TracerouteHop
 		allTime := time.Duration(0) * time.Second
 		firstReturn := true
 		for i := 0; i < sntCount; i++ {
-			singleHop, err := Udp(socketAddr, destAddr, ttl, options.Port(), tv, p)
+			singleHop, err := Udp(socketAddr, dest, ttl, options.Port(), tv, p)
 			if err != nil {
 				failSum++
 				continue
@@ -57,7 +57,7 @@ func Traceroute(dest string, options *TracerouteOptions, c ...chan TracerouteHop
 				}
 			}
 
-			if singleHop.Addr == AddressString(destAddr) {
+			if singleHop.Addr == destAddr {
 				succ = true
 			}
 		}
