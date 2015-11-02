@@ -5,7 +5,7 @@ import (
 )
 
 const DEFAULT_PORT = 33434
-const DEFAULT_MAX_HOPS = 64
+const DEFAULT_MAX_HOPS = 30
 const DEFAULT_TIMEOUT_MS = 500
 
 const DEFAULT_RETRIES = 5
@@ -35,6 +35,18 @@ type TracerouteHop struct {
 	Loss     float32
 }
 
+type MtrResult struct {
+	Success  bool
+	TTL      int
+	Host     string
+	SuccSum  int
+	LastTime time.Duration
+	AllTime  time.Duration
+	BestTime time.Duration
+	AvgTime  time.Duration
+	WrstTime time.Duration
+}
+
 type TracerouteResult struct {
 	DestAddress [4]byte
 	Hops        []TracerouteHop
@@ -47,11 +59,11 @@ type TracerouteOptions struct {
 	retries    int
 	packetSize int
 	sntSize    int
-	icmpOrUdp  string
+	/*icmpOrUdp  string*/
 }
 
-func (options *TracerouteOptions) IcmpOrUdp() string {
-	if options.icmpOrUdp == "" {
+/*func (options *TracerouteOptions) IcmpOrUdp() string {
+	if options.icmpOrUdp != DEFAULT_PROTO_ICMP && options.icmpOrUdp != DEFAULT_PROTO_UDP {
 		options.icmpOrUdp = DEFAULT_PROTO
 	}
 	return options.icmpOrUdp
@@ -62,7 +74,7 @@ func (options *TracerouteOptions) SetIcmpOrUdp(icmpOrUdp string) {
 	if options.icmpOrUdp != DEFAULT_PROTO_ICMP || options.icmpOrUdp != DEFAULT_PROTO_UDP {
 		options.icmpOrUdp = DEFAULT_PROTO
 	}
-}
+}*/
 
 func (options *TracerouteOptions) Port() int {
 	if options.port == 0 {
