@@ -3,22 +3,38 @@ package mtr
 import (
 	"bytes"
 	"fmt"
-	"net"
+	"time"
 )
 
-func T(host string) (result string, err error) {
+func T(host string, isMtr bool, maxHops, packetSize, sntSize, retries int) (result string, err error) {
 	options := TracerouteOptions{}
+	options.SetMaxHops(maxHops)
+	options.SetPacketSize(packetSize)
+	options.SetSntSize(sntSize)
+	options.SetRetries(retries)
 
-	ipAddr, err := net.ResolveIPAddr("ip", host)
+	addrs, err := DestAddrs(host)
 	if err != nil {
 		return "ip resolve error", err
 	}
 
+	var out TracerouteResult
+
 	var buffer bytes.Buffer
 
-	buffer.WriteString(fmt.Sprintf("traceroute to %v (%v), %v hops max, %v byte packets\n", host, ipAddr, options.MaxHops(), options.PacketSize()))
+	ipAddr := addrs[0]
+	if isMtr {
+		buffer.WriteString(fmt.Sprintf("Start: %v\n", time.Now().Format("Mon Jan 2 15:04:05 -0700 MST 2006")))
+		out, err = Mtr(ipAddr, &options)
+	} else {
+		if len(addrs) > 1 {
+			buffer.WriteString(fmt.Sprintf("traceroute: Warning: %v has multiple addresses; using %v\n", host, AddressString(ipAddr)))
+		}
+		buffer.WriteString(fmt.Sprintf("traceroute to %v (%v), %v hops max, %v byte packets\n", host, AddressString(ipAddr), options.MaxHops(), options.PacketSize()))
 
-	out, err := Traceroute(ipAddr.String(), &options)
+		out, err = Traceroute(ipAddr, &options)
+	}
+
 	if err == nil {
 		if len(out.Hops) == 0 {
 			buffer.WriteString("TestTraceroute failed. Expected at least one hop\n")
@@ -40,7 +56,7 @@ func T(host string) (result string, err error) {
 		if hop.Success {
 			buffer.WriteString(fmt.Sprintf("%-3d %-16v  %10.2f  %10.2f  %10.2f  %10.2f  %10.1f%c\n", hop.TTL, hop.Address, Time2Float(hop.AvgTime), Time2Float(hop.BestTime), Time2Float(hop.WrstTime), Time2Float(hop.LastTime), hop.Loss, '%'))
 		} else {
-			buffer.WriteString(fmt.Sprintf("%-3d *\n", hop.TTL))
+			buffer.WriteString(fmt.Sprintf("%-3d %-16v  %10.2f  %10.2f  %10.2f  %10.2f  %10.1f%c\n", hop.TTL, "???", float32(0), float32(0), float32(0), float32(0), float32(100), '%'))
 		}
 	}
 
