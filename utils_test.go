@@ -2,6 +2,7 @@ package mtr
 
 import (
 	"testing"
+	"time"
 )
 
 func TestLocalAddr(t *testing.T) {
@@ -18,4 +19,26 @@ func TestAddressString(t *testing.T) {
 	if !(ip == "192.168.1.23") {
 		t.Error("error")
 	}
+}
+
+func TestDestAddr(t *testing.T) {
+	dest := "www.baidu.com"
+	destAddrs, err := DestAddr(dest)
+	if err != nil {
+		t.Error(err)
+	}
+
+	if len(destAddrs) != 4 {
+		t.Error("error")
+	}
+	t.Log(destAddrs[0], destAddrs[1], destAddrs[2], destAddrs[3])
+}
+
+func TestTime2Float(t *testing.T) {
+	ff := Time2Float(time.Duration(500) * time.Millisecond)
+	t.Log(ff)
+	if ff != float32(500) {
+		t.Error("error")
+	}
+
 }

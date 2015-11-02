@@ -4,6 +4,7 @@ import (
 	"errors"
 	"fmt"
 	"net"
+	"time"
 )
 
 func LocalAddr() (addr [4]byte, err error) {
@@ -28,24 +29,27 @@ func AddressString(addr [4]byte) string {
 	return fmt.Sprintf("%v.%v.%v.%v", addr[0], addr[1], addr[2], addr[3])
 }
 
-/*func DestAddr(dest string) (destAddrs [4][4]byte, err error) {
+func DestAddr(dest string) (destAddrs [4]byte, err error) {
 	addrs, err := net.LookupHost(dest)
 	if err != nil {
 		return
 	}
-	fmt.Println(addrs)
-	//var addrs [len(addrs)][4]byte
 
-	for i, addr := range addrs {
+	for _, addr := range addrs {
 		ipAddr, err := net.ResolveIPAddr("ip", addr)
 		if err != nil {
 			continue
 		}
-		copy(addrs[i][:], ipAddr.IP.To4())
+		copy(destAddrs[:], ipAddr.IP.To4())
 	}
-	return addrs, nil
+	return
 }
 
+func Time2Float(t time.Duration) float32 {
+	return (float32)(t/time.Microsecond) / float32(1000)
+}
+
+/*
 func DestAddrOne(dest string) (destAddr [4]byte, err error) {
 	destAddrs, err := DestAddr(dest)
 	return destAddrs[0], err
