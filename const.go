@@ -12,6 +12,10 @@ const DEFAULT_RETRIES = 5
 const DEFAULT_PACKET_SIZE = 52
 const DEFAULT_SNT_SIZE = 10
 
+const DEFAULT_PROTO = "icmp"
+const DEFAULT_PROTO_ICMP = "icmp"
+const DEFAULT_PROTO_UDP = "udp"
+
 type TracerouteReturn struct {
 	Success bool
 	Addr    string
@@ -43,6 +47,21 @@ type TracerouteOptions struct {
 	retries    int
 	packetSize int
 	sntSize    int
+	icmpOrUdp  string
+}
+
+func (options *TracerouteOptions) IcmpOrUdp() string {
+	if options.icmpOrUdp == "" {
+		options.icmpOrUdp = DEFAULT_PROTO
+	}
+	return options.icmpOrUdp
+}
+
+func (options *TracerouteOptions) SetIcmpOrUdp(icmpOrUdp string) {
+	options.icmpOrUdp = icmpOrUdp
+	if options.icmpOrUdp != DEFAULT_PROTO_ICMP || options.icmpOrUdp != DEFAULT_PROTO_UDP {
+		options.icmpOrUdp = DEFAULT_PROTO
+	}
 }
 
 func (options *TracerouteOptions) Port() int {
