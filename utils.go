@@ -29,18 +29,36 @@ func AddressString(addr [4]byte) string {
 	return fmt.Sprintf("%v.%v.%v.%v", addr[0], addr[1], addr[2], addr[3])
 }
 
-func DestAddr(dest string) (destAddrs [4]byte, err error) {
+func DestAddr(dest string) (destAddr [4]byte, err error) {
 	addrs, err := net.LookupHost(dest)
 	if err != nil {
 		return
 	}
 
-	for _, addr := range addrs {
+	addr := addrs[0]
+
+	ipAddr, err := net.ResolveIPAddr("ip", addr)
+	if err != nil {
+		return
+	}
+	copy(destAddr[:], ipAddr.IP.To4())
+	return
+}
+
+func DestAddrs(dest string) (addrs [][4]byte, err error) {
+	addrStrs, err := net.LookupHost(dest)
+	if err != nil {
+		return
+	}
+	addrs = make([][4]byte, len(addrStrs))
+	for i, addr := range addrStrs {
 		ipAddr, err := net.ResolveIPAddr("ip", addr)
 		if err != nil {
 			continue
 		}
-		copy(destAddrs[:], ipAddr.IP.To4())
+		slice := [4]byte{}
+		copy(slice[:], ipAddr.IP.To4())
+		addrs[i] = slice
 	}
 	return
 }

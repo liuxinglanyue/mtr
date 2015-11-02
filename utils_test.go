@@ -42,3 +42,20 @@ func TestTime2Float(t *testing.T) {
 	}
 
 }
+
+func TestDestAddrs(t *testing.T) {
+	addrs, err := DestAddrs("www.baidu.com")
+	if err != nil {
+		t.Error(err)
+	}
+	t.Log(len(addrs))
+	if len(addrs) < 1 {
+		t.Error("no ip is error")
+	}
+	for _, addr := range addrs {
+		t.Log(addr)
+		if len(addr) != 4 {
+			t.Error("ipv4")
+		}
+	}
+}
