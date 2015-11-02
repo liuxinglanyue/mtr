@@ -6,7 +6,7 @@ import (
 )
 
 func TestSendUdp(t *testing.T) {
-	ttl := 3
+	ttl := 1
 	local := [4]byte{0, 0, 0, 0}
 	dest := [4]byte{180, 97, 30, 107}
 	tv := syscall.NsecToTimeval(1000 * 1000 * 500)
