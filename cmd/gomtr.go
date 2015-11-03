@@ -28,7 +28,10 @@ func main() {
 		}
 	}()
 	options := mtr.TracerouteOptions{}
-	_, _ = mtr.Mtr(destAddrs, &options, c)
+	_, err := mtr.Mtr(destAddrs, &options, c)
+	if err != nil {
+		fmt.Println(err)
+	}
 	//
 
 	mm, err := mtr.T("www.baidu.com", true, 0, 0, 0, 0)
