@@ -1,7 +1,7 @@
 # mtr
 mtr、 traceroute、 go、 icmp、 udp
 
-## CLI App
+## Example
 
 ```sh
 go build cmd/gomtr.go
