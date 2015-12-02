@@ -88,7 +88,7 @@ func Mtr(dest [4]byte, options *TracerouteOptions, c ...chan TracerouteHop) (res
 		hop.BestTime = mtrResult.BestTime
 		hop.LastTime = mtrResult.LastTime
 		failSum := options.SntSize() - mtrResult.SuccSum
-		loss := failSum / options.SntSize() * 100
+		loss := (float32)(failSum) / (float32)(options.SntSize()) * 100
 		hop.Loss = float32(loss)
 		hop.WrstTime = mtrResult.WrstTime
 		hop.Success = true
