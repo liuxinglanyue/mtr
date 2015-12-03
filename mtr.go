@@ -20,7 +20,8 @@ func Mtr(dest [4]byte, options *TracerouteOptions, c ...chan TracerouteHop) (res
 	for snt := 0; snt < options.SntSize(); snt++ {
 		retry := 0
 		for ttl := 1; ttl < options.MaxHops(); ttl++ {
-			hop := TracerouteHop{TTL: ttl, Snt: snt}
+			snt_plus := snt + 1
+			hop := TracerouteHop{TTL: ttl, Snt: snt_plus}
 			if mtrResults[ttl].TTL == 0 {
 				mtrResults[ttl] = MtrResult{TTL: ttl, Host: "???", SuccSum: 0, Success: false, LastTime: time.Duration(0), AllTime: time.Duration(0), BestTime: time.Duration(0), WrstTime: time.Duration(0), AvgTime: time.Duration(0)}
 			}
