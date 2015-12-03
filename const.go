@@ -28,6 +28,7 @@ type TracerouteHop struct {
 	Host     string
 	N        int
 	TTL      int
+	Snt      int
 	LastTime time.Duration
 	AvgTime  time.Duration
 	BestTime time.Duration
