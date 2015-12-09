@@ -11,7 +11,12 @@ import (
 const default_local_addr = "0.0.0.0"
 
 func RealTimePing(dest string) (hop mtr.TracerouteReturn, err error) {
-	ipAddr := net.IPAddr{IP: net.ParseIP(dest)}
+	addrs, err := mtr.DestAddrs(dest)
+	if err != nil {
+		return mtr.TracerouteReturn{}, err
+	}
+	addr := addrs[0]
+	ipAddr := net.IPAddr{IP: net.ParseIP(mtr.AddressString(addr))}
 	pid := os.Getpid() & 0xffff
 	ttl := 64
 	timeout := time.Duration(2000) * time.Millisecond
