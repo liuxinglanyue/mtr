@@ -24,4 +24,5 @@ _testmain.go
 *.prof
 
 gomtr
+goping
 cmd/cmd
