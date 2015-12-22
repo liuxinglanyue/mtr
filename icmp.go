@@ -47,6 +47,14 @@ func Icmp(localAddr string, dst net.Addr, ttl, pid int, timeout time.Duration) (
 	return hop, err
 }
 
+func IcmpRpc(localAddr string, dstAddr string, ttl int, timeout int) (hop TracerouteReturn, err error) {
+	ipAddr := net.IPAddr{IP: net.ParseIP(dstAddr)}
+	pid := os.Getpid() & 0xffff
+	to := time.Duration(timeout) * time.Millisecond
+	hop, err = Icmp(localAddr, &ipAddr, ttl, pid, to)
+	return hop, err
+}
+
 func IcmpWrapper(localAddr, destAddr [4]byte, ttl, port int, tv syscall.Timeval, p []byte) (hop TracerouteReturn, err error) {
 	ipAddr := net.IPAddr{IP: net.ParseIP(AddressString(destAddr))}
 	timeout := time.Duration(tv.Nano()/(1000*1000)) * time.Millisecond

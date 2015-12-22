@@ -22,6 +22,13 @@ type TracerouteReturn struct {
 	Elapsed time.Duration
 }
 
+type TracerouteRequest struct {
+	LocalAddr string
+	DstAddr   string
+	Ttl       int
+	Timeout   int
+}
+
 type TracerouteHop struct {
 	Success  bool
 	Address  string
